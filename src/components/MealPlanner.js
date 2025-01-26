@@ -1,164 +1,234 @@
-import React, { useState, useEffect, useRef, Check } from 'react';
-import { PlusCircle, X, ShoppingCart, ChevronDown, ChevronUp, Calendar, Edit2, Trash2} from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { PlusCircle, X, ShoppingCart, ChevronDown, ChevronUp, Calendar, Edit2, Trash2, Save, History } from 'lucide-react';
 
 const MEAL_TYPES = ['Breakfast', 'Lunch/Dinner', 'Snacks'];
+const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
 
 const DEFAULT_MEALS = {
   'Breakfast': {
   'Oatmeal hot with dates, avocado, egg whites': {
     ingredients: ['rolled oats', 'dates', 'avocado', 'egg whites', 'salt', 'honey'],
-    category: 'Breakfast'
+    category: 'Breakfast',
+    frequency: 1
   },
   'Avocado toast with sunny side egg': {
     ingredients: ['sourdough bread', 'avocado', 'eggs', 'salt', 'pepper', 'red pepper flakes', 'microgreens'],
-    category: 'Breakfast'
+    category: 'Breakfast',
+    frequency: 1
   },
   'Oatmeal overnight with chia, fruit': {
     ingredients: ['rolled oats', 'chia seeds', 'milk', 'honey', 'mixed fruits', 'nuts', 'cinnamon'],
-    category: 'Breakfast'
+    category: 'Breakfast',
+    frequency: 1
+
   },
   'Shakshuka with fresh bread': {
     ingredients: ['eggs', 'tomatoes', 'bell peppers', 'onion', 'garlic', 'bread', 'cumin', 'paprika', 'fresh herbs'],
-    category: 'Breakfast'
+    category: 'Breakfast',
+    frequency: 1
   },
   'Crepe with hazelnut spread, fruits': {
     ingredients: ['flour', 'eggs', 'milk', 'butter', 'hazelnut spread', 'fresh fruits', 'powdered sugar'],
-    category: 'Breakfast'
+    category: 'Breakfast',
+    frequency: 1
   },
   'Chocolate buttermilk Pancakes': {
     ingredients: ['flour', 'cocoa powder', 'buttermilk', 'eggs', 'sugar', 'baking powder', 'vanilla extract', 'mixed berries'],
-    category: 'Breakfast'
+    category: 'Breakfast',
+    frequency: 1
   },
   'Cottage cheese almond flour pancakes': {
     ingredients: ['cottage cheese', 'almond flour', 'eggs', 'vanilla extract', 'maple syrup', 'baking powder'],
-    category: 'Breakfast'
+    category: 'Breakfast',
+    frequency: 1
   },
   'Frozen waffles with hazelnut spread': {
     ingredients: ['frozen waffles', 'hazelnut spread', 'banana', 'berries', 'maple syrup'],
-    category: 'Breakfast'
+    category: 'Breakfast',
+    frequency: 1
   },
   'Cheerios with milk': {
     ingredients: ['cheerios', 'milk', 'banana', 'honey', 'mixed berries'],
-    category: 'Breakfast'
+    category: 'Breakfast',
+    frequency: 1
   },
   'Idli and chutney / sambhar': {
     ingredients: ['idli batter', 'coconut chutney', 'sambhar', 'ghee'],
-    category: 'Breakfast'
+    category: 'Breakfast',
+    frequency: 1
   },
   'Idiyappam and egg curry': {
     ingredients: ['idiyappam', 'eggs', 'onion', 'tomatoes', 'curry leaves', 'coconut milk', 'spices'],
-    category: 'Breakfast'
+    category: 'Breakfast',
+    frequency: 1
   },
   'Omelette with veggies': {
     ingredients: ['eggs', 'bell peppers', 'onion', 'cheese', 'spinach', 'mushrooms', 'herbs'],
-    category: 'Breakfast'
+    category: 'Breakfast',
+    frequency: 1
   },
   'Bagel with cream cheese': {
     ingredients: ['bagel', 'cream cheese', 'tomato', 'cucumber', 'red onion', 'capers'],
-    category: 'Breakfast'
+    category: 'Breakfast',
+    frequency: 1
   },
   'Smoothies': {
     ingredients: ['mixed fruits', 'yogurt', 'milk', 'honey', 'protein powder', 'chia seeds', 'spinach'],
-    category: 'Breakfast'
+    category: 'Breakfast',
+    frequency: 1
   },
   'Whole wheat banana carrot Muffins': {
     ingredients: ['whole wheat flour', 'banana', 'carrots', 'eggs', 'milk', 'honey', 'cinnamon', 'walnuts'],
-    category: 'Breakfast'
+    category: 'Breakfast',
+    frequency: 1
   },
   'Zucchini chocolate loaf': {
     ingredients: ['flour', 'zucchini', 'cocoa powder', 'eggs', 'sugar', 'vegetable oil', 'chocolate chips'],
-    category: 'Breakfast'
+    category: 'Breakfast',
+    frequency: 1
   },
   'Menmen': {
     ingredients: ['eggs', 'tomatoes', 'peppers', 'onion', 'Turkish pepper paste', 'bread', 'feta cheese'],
-    category: 'Breakfast'
+    category: 'Breakfast',
+    frequency: 1
   },
 },
 'Lunch/Dinner': {
 'Quinoa Buddha Bowl': {
 ingredients: ['quinoa', 'chickpeas', 'sweet potato', 'kale', 'tahini', 'olive oil', 'lemon'],
-category: 'Lunch/Dinner'
+category: 'Lunch/Dinner',
+frequency: 1
 },
 'Chicken Caesar Wrap': {
 ingredients: ['tortilla', 'chicken breast', 'romaine lettuce', 'parmesan', 'caesar dressing'],
-category: 'Lunch/Dinner'
+category: 'Lunch/Dinner',
+frequency: 1
 },
 'Salmon with Roasted Vegetables': {
 ingredients: ['salmon fillet', 'broccoli', 'carrots', 'olive oil', 'lemon', 'garlic', 'herbs'],
-category: 'Lunch/Dinner'
+category: 'Lunch/Dinner',
+frequency: 1
 },
 'Vegetarian Curry': {
 ingredients: ['chickpeas', 'coconut milk', 'onion', 'tomatoes', 'curry powder', 'rice', 'cilantro'],
-category: 'Lunch/Dinner'
+category: 'Lunch/Dinner',
+frequency: 1
 }
 },
 'Snacks': {
 'Greek Yogurt Parfait': {
 ingredients: ['greek yogurt', 'granola', 'honey', 'mixed berries'],
-category: 'Snacks'
+category: 'Snacks',
+frequency: 1
 },
 'Hummus and Vegetables': {
 ingredients: ['hummus', 'carrots', 'cucumber', 'bell peppers', 'pita bread'],
-category: 'Snacks'}
+category: 'Snacks, frequency: 1'}
 }
-};
-
-const MealPlanner = () => {
-  const [mealList, setMealList] = useState(() => {
-    const saved = localStorage.getItem('meallist');
-    return saved ? JSON.parse(saved) : DEFAULT_MEALS;
-  });
-
-  const [weeklyPlan, setWeeklyPlan] = useState(() => {
-    const saved = localStorage.getItem('weeklyPlan');
-    return saved ? JSON.parse(saved) : generateWeeklyPlan(DEFAULT_MEALS);
-  });
-
-  const [monthlyPlan, setMonthlyPlan] = useState(() => {
-    const saved = localStorage.getItem('monthlyPlan');
-    return saved ? JSON.parse(saved) : generateMonthlyPlan(DEFAULT_MEALS);
-  });
-
-  const [editingMeal, setEditingMeal] = useState(null);
-  const [editedMealName, setEditedMealName] = useState('');
-  const [editedIngredients, setEditedIngredients] = useState('');
-  const [editedCategory, setEditedCategory] = useState('');
-  const [newMeal, setNewMeal] = useState('');
-  const [newIngredients, setNewIngredients] = useState('');
-  const [selectedMealType, setSelectedMealType] = useState('Breakfast');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [viewMode, setViewMode] = useState('weekly');
-  const [showShoppingList, setShowShoppingList] = useState(false);
-  const [selectedWeek, setSelectedWeek] = useState(1);
-  const [showIngredients, setShowIngredients] = useState({});
-  const [draggedMeal, setDraggedMeal] = useState(null);
-  const [draggedMealInfo, setDraggedMealInfo] = useState(null);
-  const [touchStartPos, setTouchStartPos] = useState(null);
-  const draggedElement = useRef(null);
-  const ghostElement = useRef(null);
-
-  function generateWeeklyPlan(meals) {
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    const plan = {};
-    
-    days.forEach(day => {
-      plan[day] = {};
-      MEAL_TYPES.forEach(mealType => {
-        plan[day][mealType] = [];
-        const mealOptions = Object.keys(meals[mealType] || {});
-        const numMeals = mealType === 'Snacks' ? 2 : 1;
-        
-        for (let i = 0; i < numMeals; i++) {
-          if (mealOptions.length > 0) {
-            const randomMeal = mealOptions[Math.floor(Math.random() * mealOptions.length)];
-            plan[day][mealType].push(randomMeal);
-          }
-        }
-      });
+};  
+  const MealPlanner = () => {
+    // All state declarations first
+    const [mealList, setMealList] = useState(() => {
+      const saved = localStorage.getItem('mealList');
+      return saved ? JSON.parse(saved) : DEFAULT_MEALS;
     });
-    
-    return plan;
-  }
+  
+    const [weeklyPlan, setWeeklyPlan] = useState(() => {
+      const saved = localStorage.getItem('weeklyPlan');
+      return saved ? JSON.parse(saved) : generateWeeklyPlan(DEFAULT_MEALS);
+    });
+  
+    const [monthlyPlan, setMonthlyPlan] = useState(() => {
+      const saved = localStorage.getItem('monthlyPlan');
+      return saved ? JSON.parse(saved) : generateMonthlyPlan(DEFAULT_MEALS);
+    });
+  
+    const [editingMeal, setEditingMeal] = useState(null);
+    const [editedMealName, setEditedMealName] = useState('');
+    const [editedIngredients, setEditedIngredients] = useState('');
+    const [editedCategory, setEditedCategory] = useState('');
+    const [newMeal, setNewMeal] = useState('');
+    const [newIngredients, setNewIngredients] = useState('');
+    const [selectedMealType, setSelectedMealType] = useState('Breakfast');
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [viewMode, setViewMode] = useState('weekly');
+    const [showShoppingList, setShowShoppingList] = useState(false);
+    const [selectedWeek, setSelectedWeek] = useState(1);
+    const [showIngredients, setShowIngredients] = useState({});
+    const [draggedMeal, setDraggedMeal] = useState(null);
+    const [draggedMealInfo, setDraggedMealInfo] = useState(null);
+    const [touchStartPos, setTouchStartPos] = useState(null);
+
+    const [finalizedPlans, setFinalizedPlans] = useState(() => {
+      const saved = localStorage.getItem('finalizedPlans');
+      return saved ? JSON.parse(saved) : {};
+    });
+    const [selectedPlanDate, setSelectedPlanDate] = useState(null);
+    const [editedFrequency, setEditedFrequency] = useState(1);
+
+    const draggedElement = useRef(null);
+    const ghostElement = useRef(null);
+  
+    // Then useEffect hooks for localStorage
+    useEffect(() => {
+      localStorage.setItem('mealList', JSON.stringify(mealList));
+    }, [mealList]);
+  
+    useEffect(() => {
+      localStorage.setItem('weeklyPlan', JSON.stringify(weeklyPlan));
+    }, [weeklyPlan]);
+  
+    useEffect(() => {
+      localStorage.setItem('monthlyPlan', JSON.stringify(monthlyPlan));
+    }, [monthlyPlan]);
+
+    useEffect(() => {
+      localStorage.setItem('finalizedPlans', JSON.stringify(finalizedPlans));
+    }, [finalizedPlans]);
+  
+
+    function generateWeeklyPlan(meals, startDate = new Date()) {
+      const plan = {};
+      
+      DAYS.forEach((day, index) => {
+        const currentDate = new Date(startDate);
+        currentDate.setDate(startDate.getDate() + index);
+        
+        plan[day] = {};
+        MEAL_TYPES.forEach(mealType => {
+          plan[day][mealType] = [];
+          const mealOptions = Object.entries(meals[mealType] || {})
+            .filter(([_, details]) => {
+              const weekNumber = Math.floor(currentDate.getTime() / (7 * 24 * 60 * 60 * 1000));
+              return weekNumber % (details.frequency || 1) === 0;
+            })
+            .map(([meal]) => meal);
+            
+          const numMeals = mealType === 'Snacks' ? 2 : 1;
+          
+          for (let i = 0; i < numMeals; i++) {
+            if (mealOptions.length > 0) {
+              const randomIndex = Math.floor(Math.random() * mealOptions.length);
+              plan[day][mealType].push(mealOptions[randomIndex]);
+            }
+          }
+        });
+      });
+      
+      return plan;
+    }
+
+    const finalizeMealPlan = () => {
+      const currentDate = new Date().toISOString().split('T')[0];
+      setFinalizedPlans(prev => ({
+        ...prev,
+        [currentDate]: {
+          plan: viewMode === 'weekly' ? weeklyPlan : monthlyPlan[selectedWeek],
+          startDate: currentDate
+        }
+      }));
+    };
 
   function generateMonthlyPlan(meals) {
     const weeks = Array.from({ length: 4 }, (_, i) => i + 1);
@@ -366,11 +436,56 @@ const handleDrop = (targetWeek, targetDay, targetType) => {
       .sort((a, b) => a.ingredient.localeCompare(b.ingredient));
   };
 
+  const handleUpdateMeal = (oldMealName) => {
+    if (editedMealName.trim() && editedIngredients.trim()) {
+      setMealList(prev => {
+        const newList = { ...prev };
+        delete newList[selectedMealType][oldMealName];
+        newList[selectedMealType][editedMealName.trim()] = {
+          ingredients: editedIngredients.split(',').map(i => i.trim()),
+          category: editedCategory || 'Custom',
+          frequency: parseInt(editedFrequency) || 1
+        };
+        return newList;
+      });
+  
+      // Update meal references in plans
+      const updatePlanMeals = (plan) => {
+        const newPlan = { ...plan };
+        Object.keys(newPlan).forEach(day => {
+          Object.keys(newPlan[day]).forEach(type => {
+            newPlan[day][type] = newPlan[day][type].map(meal => 
+              meal === oldMealName ? editedMealName.trim() : meal
+            );
+          });
+        });
+        return newPlan;
+      };
+  
+      setWeeklyPlan(prev => updatePlanMeals(prev));
+      setMonthlyPlan(prev => {
+        const newMonthlyPlan = { ...prev };
+        Object.keys(newMonthlyPlan).forEach(week => {
+          newMonthlyPlan[week] = updatePlanMeals(newMonthlyPlan[week]);
+        });
+        return newMonthlyPlan;
+      });
+  
+      // Reset edit state
+      setEditingMeal(null);
+      setEditedMealName('');
+      setEditedIngredients('');
+      setEditedCategory('');
+      setEditedFrequency(1);
+    }
+  };
+  
+
   // Render meal options in the sidebar
   const renderMealOption = (meal, details) => (
     <div
       key={meal}
-      draggable
+      draggable={!editingMeal}
       className="bg-white rounded border cursor-move hover:bg-gray-50"
       onDragStart={(e) => {
         e.dataTransfer.setData('text/plain', meal);
@@ -383,30 +498,92 @@ const handleDrop = (targetWeek, targetDay, targetType) => {
         });
       }}
     >
-      <div className="flex justify-between items-center p-2">
-        <span className="flex-1">{meal}</span>
-        <div className="flex gap-2">
-          <button 
-            onClick={() => setEditingMeal(meal)}
-            className="text-blue-500 hover:text-blue-700"
+      {editingMeal === meal ? (
+        <div className="p-2">
+          <input
+            type="text"
+            value={editedMealName}
+            onChange={(e) => setEditedMealName(e.target.value)}
+            className="w-full p-2 border rounded mb-2"
+            placeholder="Meal name"
+          />
+          <textarea
+            value={editedIngredients}
+            onChange={(e) => setEditedIngredients(e.target.value)}
+            className="w-full p-2 border rounded mb-2"
+            placeholder="Ingredients (comma-separated)"
+            rows="2"
+          />
+          <select
+            value={editedCategory}
+            onChange={(e) => setEditedCategory(e.target.value)}
+            className="w-full p-2 border rounded mb-2"
           >
-            <Edit2 size={16} />
-          </button>
-          <button 
-            onClick={() => handleDeleteMeal(meal)}
-            className="text-red-500 hover:text-red-700"
-          >
-            <Trash2 size={16} />
-          </button>
-          <button 
-            onClick={() => setShowIngredients(prev => ({...prev, [meal]: !prev[meal]}))}
-            className="text-gray-500 hover:text-gray-700"
-          >
-            {showIngredients[meal] ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-          </button>
+            <option value="">Select Category</option>
+            {getMealCategories(selectedMealType).map(category => (
+              <option key={category} value={category}>{category}</option>
+            ))}
+            <option value="Custom">Custom</option>
+          </select>
+          <input
+            type="number"
+            value={editedFrequency}
+            onChange={(e) => setEditedFrequency(e.target.value)}
+            min="1"
+            max="52"
+            className="w-full p-2 border rounded mb-2"
+            placeholder="Repeat every X weeks"
+          />
+          <div className="flex gap-2">
+            <button
+              onClick={() => handleUpdateMeal(meal)}
+              className="flex-1 p-2 bg-green-500 text-white rounded hover:bg-green-600"
+            >
+              Save
+            </button>
+            <button
+              onClick={() => setEditingMeal(null)}
+              className="flex-1 p-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
-      </div>
-      {showIngredients[meal] && (
+      ) : (
+        <div className="flex justify-between items-center p-2">
+          <span className="flex-1">{meal}</span>
+          <div className="text-sm text-gray-600">
+            Repeats every {details.frequency || 1} week(s)
+          </div>
+          <div className="flex gap-2">
+            <button 
+              onClick={() => {
+                setEditingMeal(meal);
+                setEditedMealName(meal);
+                setEditedIngredients(details.ingredients.join(', '));
+                setEditedCategory(details.category);
+                setEditedFrequency(details.frequency || 1);
+              }}
+              className="text-blue-500 hover:text-blue-700"
+            >
+              <Edit2 size={16} />
+            </button>
+            <button 
+              onClick={() => handleDeleteMeal(meal)}
+              className="text-red-500 hover:text-red-700"
+            >
+              <Trash2 size={16} />
+            </button>
+            <button 
+              onClick={() => setShowIngredients(prev => ({...prev, [meal]: !prev[meal]}))}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              {showIngredients[meal] ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            </button>
+          </div>
+        </div>
+      )}
+      {!editingMeal && showIngredients[meal] && (
         <div className="p-2 border-t bg-gray-50">
           <div className="text-sm text-gray-600 mb-2">
             Category: {details.category}
@@ -416,6 +593,24 @@ const handleDrop = (targetWeek, targetDay, targetType) => {
           </div>
         </div>
       )}
+    </div>
+  );
+
+  const renderPlanHistory = () => (
+    <div className="mt-6 bg-white rounded-lg shadow-md p-4">
+      <h3 className="text-lg font-semibold mb-4">Meal Plan History</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {Object.entries(finalizedPlans).map(([date, { plan }]) => (
+          <div key={date} className="border rounded p-3 hover:bg-gray-50">
+            <button 
+              onClick={() => setSelectedPlanDate(date)}
+              className="w-full text-left"
+            >
+              Week of {new Date(date).toLocaleDateString()}
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 
